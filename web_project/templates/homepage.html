@@ -48,18 +48,24 @@
         </a>
         <div class="navbar">
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="#">News</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="{% url 'workouts' %}">AI Trainer</a></li>
+                <li><a href="{% url 'myworkouts' %}">My workouts</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
 
-        <a href="#registration">
+        {% if request.user.is_authenticated %}
+        <a style=" color:white;" href="{% url 'workouts' %}">Hello, {{request.user.first_name}}</a></br>
+        <a href="{% url 'logout' %}" style=" color:white;">Logout</a>
+        {% else %}
+        <a href="{% url 'register' %}">
             <div class="button">
-                <button class="btn2 grow">Become a member</button>
+                <!-- <a style=" color:white;" href="{% url 'myworkouts' %}" role="button">Signup/Login</a> -->
+                <button class="btn2 grow">Signup/Login</button>
             </div>
         </a>
+        {% endif %}
     </header>
     <div class="body">
 
@@ -86,233 +92,8 @@
 
     <!-- Checking -->
 
-    <section class="featureclass">
-        <h1 data-aos="fade-right" data-aos-duration="800">FEATURED CLASSES</h1>
-
-        <div class="grid">
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <div class="img">
-                    <img src="{% static 'images/chest_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <a href="./chestworkout.html">
-                        <h2 class="title">Chest Workout</h2>
-                </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./back.html">
-                    <div class="img">
-                        <img src="{% static 'images/back_day.jpg' %}" alt="" />
-                    </div>
-                    <div class="content">
-                        <h2 class="title">Back Workout</h2>
-                    </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./leg workout.html">
-                    <div class="img">
-                        <img src="{% static 'images/leg_day.jpeg' %}" alt="" />
-                    </div>
-
-                    <div class="content">
-                        <h2 class="title">Leg Workout</h2>
-                    </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./armworkout.html">
-                    <div class="img">
-                        <img src="{% static 'images/arm_day.jpg' %}" alt="" />
-                    </div>
-                    <div class="content">
-                        <h2 class="title">Arm Workout</h2>
-                    </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./tricepWorkout.html">
-                    <div class="img">
-                        <img src="{% static 'images/tricep_day.jpg' %}" alt="" />
-                    </div>
-                    <div class="content">
-                        <h2 class="title">Tricep Workout</h2>
-                    </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./shoulder.html">
-                    <div class="img">
-                        <img src="{% static 'images/shoulder_day.jpg' %}" alt="" />
-                    </div>
-                    <div class="content">
-                        <h2 class="title">Shoulder Workout</h2>
-                    </div>
-                </a>
-            </div>
-
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./bicep.html">
-                    <div class="img">
-                        <img src="{% static 'images/bicep_day.jpg' %}" alt="" />
-                    </div>
-                    <div class="content">
-                        <h2 class="title">Bicep Workout</h2>
-                    </div>
-                </a>
-            </div>
-            <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-                <a href="./cardio.html">
-
-                    <div class="img">
-                        <img src="{% static 'images/cardio_day.jpg' %}" alt="" />
-                    </div>
-                </a>
-                <div class="content">
-                    <a href="./cardio.html">
-                        <h2 class="title">Cardio Workout</h2>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="scheduledclass" class="scheduledclass">
-        <div class="topscheduledclass">
-            <h1 data-aos="fade-right" data-aos-duration="800">SCHEDULED CLASS</h1>
-        </div>
-
-        <div class="grid">
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/chest_day.jpg' %}" alt="" srcset="">
-                </div>
-                <div class="content">
-                    <h2 class="title">Chest Workout</h2>
-
-                    <p>Increases muscle mass.Boosts upper-body strength. Improves posture</p>
-                    <span class="time">Saturday, 5:30 am - 7:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/back_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <h2 class="title">Back Workout</h2>
 
 
-                    <p>Strengthening the back and shoulder muscles can correct posterior imbalance
-                        and improve core strength.</p>
-                    <span class="time">Saturday, 7:30 am - 9:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-
-            <!-- <div class="grid"> -->
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/leg_day.jpeg' %}" alt="" srcset="">
-                </div>
-                <div class="content">
-                    <h2 class="title">Leg Workout</h2>
-                    <p>Stronger legs significantly emhance performance in workouts,including cardio
-                        training sessions such as running, walking and jogging.</p>
-                    <span class="time">Saturday, 7:30 am - 9:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/arm_day.jpg' %}" alt="">
-                </div>
-                <div class="content">
-                    <h2 class="title">Arm Workout</h2>
-                    <p>Arm workouts can also strengthen your bones.They can even reduce your risk of developing
-                        diseases
-                        such as osteoporosis.</p>
-                    <span class="time">Saturday, 5:30 am - 7:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/tricep_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <h2 class="title">Tricep Workout</h2>
-
-
-                    <p>Improving triceps strength brings stability to your arms shoulders, increases flexibility,
-                        and
-                        increases
-                        range of motion.
-                        This will prevent injury and make it easier for you to use your upper limb in daily
-                        activities.
-                    </p>
-                    <span class="time">Sunday, 5:30 am - 7:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/shoulder_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <h2 class="title">Shoulder Workout</h2>
-
-
-                    <p>Strong shoulders make most arm movements easier, whether you’re throwing a baseball,
-                        passing food across the table, or lifting a suitcase that’s a little too heavy.</p>
-                    <span class="time">Sunday, 7:30 am - 9:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/bicep_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <h2 class="title">Bicep Workout</h2>
-
-
-                    <p> The biceps help the rotator cuff with shoulder stability. And healthy rotator cuffs are
-                        important because
-                        you need the stability
-                        the cuffs give the ability to move the shoulder through its full range of motion.</p>
-                    <span class="time">Sunday, 5:30 am - 7:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
-                <div class="img">
-                    <img src="{% static 'images/cardio_day.jpg' %}" alt="" />
-                </div>
-                <div class="content">
-                    <h2 class="title">Cardio Workout</h2>
-
-
-                    <p>Cardiovascular exercise makes your brain release endorphins,
-                        improving your stamina and increasing your energy levels.
-                        They also get the blood flowing, so your oxygen levels increase,
-                        and your heart rate increases.</p>
-                    <span class="time">Sunday, 7:30 am - 9:30 am</span>
-                    <button class="btn">Join now</button>
-                </div>
-            </div>
-
-            <!-- </div> -->
-        </div>
-    </section>
     <section class="trainers">
         <div class="toptrainers">
             <h1 data-aos="fade-right" data-aos-duration="800">Meet the Trainers</h1>

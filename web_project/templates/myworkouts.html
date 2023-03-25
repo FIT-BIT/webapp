@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<section id="scheduledclass" class="featureclass">
+
+    <h1 data-aos="fade-right" data-aos-duration="800">My Workouts</h1>
+    <div>
+        <button type="button" class="btn btn-light" style="float: right;">Create a new workout</button>
+
+    </div>
+
+    <div class="grid">
+
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/chest_day.jpg' %}" alt="" srcset="">
+            </div>
+            <div class="content">
+                <h2 class="title">Slip Disc Workout</h2>
+
+                <!-- <p>Increases muscle mass.Boosts upper-body strength. Improves posture</p> -->
+                <!-- <span class="time">Saturday, 5:30 am - 7:30 am</span> -->
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/back_day.jpg' %}" alt="" />
+            </div>
+            <div class="content">
+                <h2 class="title">Workout 2</h2>
+
+
+                <!-- <p>Strengthening the back and shoulder muscles can correct posterior imbalance
+                    and improve core strength.</p> -->
+                <!-- <span class="time">Saturday, 7:30 am - 9:30 am</span> -->
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+
+        <!-- <div class="grid"> -->
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/leg_day.jpeg' %}" alt="" srcset="">
+            </div>
+            <div class="content">
+                <h2 class="title">Workout 3</h2>
+                <!-- <p>Stronger legs significantly emhance performance in workouts,including cardio
+                    training sessions such as running, walking and jogging.</p> -->
+                <!-- <span class="time">Saturday, 7:30 am - 9:30 am</span> -->
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+        <!-- <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/arm_day.jpg' %}" alt="">
+            </div>
+            <div class="content">
+                <h2 class="title">Arm Workout</h2>
+                <p>Arm workouts can also strengthen your bones.They can even reduce your risk of developing
+                    diseases
+                    such as osteoporosis.</p>
+                <span class="time">Saturday, 5:30 am - 7:30 am</span>
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/tricep_day.jpg' %}" alt="" />
+            </div>
+            <div class="content">
+                <h2 class="title">Tricep Workout</h2>
+
+
+                <p>Improving triceps strength brings stability to your arms shoulders, increases flexibility,
+                    and
+                    increases
+                    range of motion.
+                    This will prevent injury and make it easier for you to use your upper limb in daily
+                    activities.
+                </p>
+                <span class="time">Sunday, 5:30 am - 7:30 am</span>
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/shoulder_day.jpg' %}" alt="" />
+            </div>
+            <div class="content">
+                <h2 class="title">Shoulder Workout</h2>
+
+
+                <p>Strong shoulders make most arm movements easier, whether you’re throwing a baseball,
+                    passing food across the table, or lifting a suitcase that’s a little too heavy.</p>
+                <span class="time">Sunday, 7:30 am - 9:30 am</span>
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/bicep_day.jpg' %}" alt="" />
+            </div>
+            <div class="content">
+                <h2 class="title">Bicep Workout</h2>
+
+
+                <p> The biceps help the rotator cuff with shoulder stability. And healthy rotator cuffs are
+                    important because
+                    you need the stability
+                    the cuffs give the ability to move the shoulder through its full range of motion.</p>
+                <span class="time">Sunday, 5:30 am - 7:30 am</span>
+                <button class="btn">Start now</button>
+            </div>
+        </div>
+
+        <div data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000" class="card">
+            <div class="img">
+                <img src="{% static 'images/cardio_day.jpg' %}" alt="" />
+            </div>
+            <div class="content">
+                <h2 class="title">Cardio Workout</h2>
+
+
+                <p>Cardiovascular exercise makes your brain release endorphins,
+                    improving your stamina and increasing your energy levels.
+                    They also get the blood flowing, so your oxygen levels increase,
+                    and your heart rate increases.</p>
+                <span class="time">Sunday, 7:30 am - 9:30 am</span>
+                <button class="btn">Start now</button>
+            </div>
+        </div> -->
+
+        <!-- </div> -->
+    </div>
+</section>
+
+{% endblock %}

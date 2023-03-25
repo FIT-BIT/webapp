@@ -23,5 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('home.urls')),
     path('', views.home, name='homepage'),
-    # path('contact', views.contact, name='contact'),
+    path('workouts', views.workouts, name='workouts'),
+    path('myworkouts', views.myworkouts, name='myworkouts'),
+    path('register', include('user.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
