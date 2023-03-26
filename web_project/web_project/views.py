@@ -13,23 +13,22 @@ from core import ExercisesModule as trainer
 from core.exercise_counter import bicep_curl_rep
 
 
-# def gen():
-#     for i in range(0, 5):
-#         level = 1
-#         cap = cv2.VideoCapture(0)
-#         for i in bicep_curl_rep(cap,5):
-#             yield i
-#         # for i in trainer.start_workout_session(level).complete_path("Easy"):
-#         #     yield i
-#             # print("hereee ------------------------------------")
-#         print("DONE!")
+def gen():
+    for i in range(0, 5):
+        level = 1
+        # cap = cv2.VideoCapture(0)
+        for i in bicep_curl_rep(5):
+            yield i
+        # for i in trainer.start_workout_session(level).complete_path("Easy"):
+        #     yield i
+            # print("hereee ------------------------------------")
+        print("DONE!")
     
 
-# # @app.route("/video_feed")
-# @gzip.gzip_page
-# def video_feed(request):
-#     response = StreamingHttpResponse(gen(), content_type="multipart/x-mixed-replace;boundary=frame")
-#     return response
+@gzip.gzip_page
+def video_feed(request):
+    response = StreamingHttpResponse(gen(), content_type="multipart/x-mixed-replace;boundary=frame")
+    return response
 
 # camera = VideoCamera()
 
@@ -63,12 +62,12 @@ class Camera:
         return jpeg.tobytes()
 
 # Create an instance of the Camera class
-camera = Camera()
+# camera = Camera()
 
 # Create a view that streams video frames as a multipart response
 @gzip.gzip_page
-def video_feed(request):
-    response = StreamingHttpResponse(generator(camera), content_type="multipart/x-mixed-replace;boundary=frame")
+def video_feed_camera(request):
+    response = StreamingHttpResponse(generator(Camera()), content_type="multipart/x-mixed-replace;boundary=frame")
     return response
 
 # A generator function that yields video frames as multipart responses
