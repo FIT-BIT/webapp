@@ -291,7 +291,7 @@ def bicep_curl_rep(total_reps):
         while reps < total_reps:
             # image = camera.get_frame()
             ret, image = cap.read()
-            print("dfddddddddddddd",image.size())
+            # print("dfddddddddddddd",image.size())
             # Convert the image to RGB format
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

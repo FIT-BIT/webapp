@@ -8,8 +8,8 @@ import cv2
 import threading
 from django.http import StreamingHttpResponse
 from django.views.decorators import gzip
-from  core import AudioCommSys as audio
-from crypt import methods
+from core import AudioCommSys as audio
+# from crypt import methods
 from requests import Response
 from core import ExercisesModule as trainer
 # from core.camera import VideoCamera
@@ -26,11 +26,12 @@ def gen():
         #     yield i
             # print("hereee ------------------------------------")
         print("DONE!")
-    
+
 
 @gzip.gzip_page
 def video_feed(request):
-    response = StreamingHttpResponse(gen(), content_type="multipart/x-mixed-replace;boundary=frame")
+    response = StreamingHttpResponse(
+        gen(), content_type="multipart/x-mixed-replace;boundary=frame")
     return response
 
 # camera = VideoCamera()
@@ -48,15 +49,19 @@ def video_feed(request):
 #         yield (b'--frame\r\n'
 #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+
 def home(request):
     return render(request, 'homepage.html')
     # return render( request, 'index.html' )
-    
+
+
 def workouts(request):
     return render(request, 'workouts.html')
 
+
 def myworkouts(request):
-    return render(request, 'myworkouts.html')    
+    return render(request, 'myworkouts.html')
+
 
 class Camera:
     def __init__(self):
@@ -74,12 +79,17 @@ class Camera:
 # camera = Camera()
 
 # Create a view that streams video frames as a multipart response
+
+
 @gzip.gzip_page
 def video_feed_camera(request):
-    response = StreamingHttpResponse(generator(Camera()), content_type="multipart/x-mixed-replace;boundary=frame")
+    response = StreamingHttpResponse(
+        generator(Camera()), content_type="multipart/x-mixed-replace;boundary=frame")
     return response
 
 # A generator function that yields video frames as multipart responses
+
+
 def generator(camera):
     while True:
         frame = camera.get_frame()
@@ -89,5 +99,4 @@ def generator(camera):
 
 def exercise(request):
     # exercise_counter.main()
-    return render (request,'exercisepage.html')
-
+    return render(request, 'exercisepage.html')
