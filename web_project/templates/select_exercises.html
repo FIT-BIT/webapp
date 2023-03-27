@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>Create Workout Routine</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+                <h2>Select Exercises</h2>
+                {% for exercise in exercises %}
+                    <div class="card">
+                        <div class="card-header">
+                            <input type="checkbox" id="exercise_{{ exercise.id }}" name="exercises" value="{{ exercise.id }}">
+                            <label for="exercise_{{ exercise.id }}">{{ exercise.name }}</label>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ exercise.description }}</p>
+                            <div class="form-group">
+                                <label for="sets_{{ exercise.id }}">Sets</label>
+                                <input type="number" class="form-control" id="sets_{{ exercise.id }}" name="sets_{{ exercise.id }}" min="1" max="10" value="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="reps_{{ exercise.id }}">Reps</label>
+                                <input type="number" class="form-control" id="reps_{{ exercise.id }}" name="reps_{{ exercise.id }}" min="1" max="50" value="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="rest_time_{{ exercise.id }}">Rest Time (seconds)</label>
+                                <input type="number" class="form-control" id="rest_time_{{ exercise.id }}" name="rest_time_{{ exercise.id }}" min="1" max="300" value="60">
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <br>
+                <button type="submit" class="btn btn-primary">Create Workout Routine</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <!-- display user profile -->
+
+            <h1>User Profile</h1>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Personal Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                            <p class="card-text"><strong>Age:</strong> {{ user.age }}</p>
+                            <p class="card-text"><strong>Gender:</strong> {{ user.gender }}</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Medical Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Blood Pressure:</strong> {{ user.medical_info.blood_pressure }}</p>
+                            <p class="card-text"><strong>Heart Rate:</strong> {{ user.medical_info.heart_rate }}</p>
+                            <p class="card-text"><strong>BMI:</strong> {{ user.medical_info.bmi }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Workout Routines</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if user.workout_routines %}
+                                <ul>
+                                    {% for routine in user.workout_routines.all %}
+                                        <li>{{ routine.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No workout routines found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
