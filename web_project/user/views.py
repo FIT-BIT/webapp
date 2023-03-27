@@ -40,8 +40,10 @@ def create_workout_routine(request):
         )
         return render(request, 'workout_routine_created.html', {'workout_routine': workout_routine})
     else:
-        
-        return redirect('select_exercises')
+        print("xxxxxxxxxxxxxx")
+        # return redirect('select_exercises')
+        exercises = [{"name":"leg","description":"leg"},{"name":"back","description":"back"},{"name":"chest","description":"chest"}]
+        return render(request, 'select_exercises.html', {'exercises': exercises})
 
 
 
