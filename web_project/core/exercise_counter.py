@@ -3,30 +3,65 @@
 
 # # Install and Import Dependencies
 
-# In[ ]:
+# In[1]:
 
 
 import cv2
 import mediapipe as mp
 import numpy as np 
 import time
-import speech_recognition as sr
-from gtts import gTTS
-import os
-from io import BytesIO
-from playsound import playsound
-from datetime import datetime
-# from camera import VideoCamera
-
-# import Audio_Communication_System as audio
+from  core import PoseModule as pm
+from  core import AudioCommSys as audio
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-language = 'en'
+
+# # Utilities 
+
+# In[2]:
+
+
+def display_picture(exercise, seconds = 2):
+        image = cv2.imread(r"C:\Users\navya\Jupyter Notebooks\Major Project\webapp\web_project\core\images\{}.jpg".format(exercise))
+        image = cv2.resize(image, (800, 500))
+        while seconds > 0:
+            ret, jpeg = cv2.imencode(".jpg", image)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+            )
+            time.sleep(1)
+            seconds-=1
+
+def draw_performance_bar(image, per, bar):
+    cv2.rectangle(image, (580, 50), (600, 380), (0, 255, 0), 3)
+    cv2.rectangle(image, (580, int(bar)), (600, 380), (0, 255, 0), cv2.FILLED)
+    cv2.putText(image, f'{int(per)}%', (565, 430), cv2.FONT_HERSHEY_PLAIN, 2,
+                (255, 0, 0), 2)
+    return
+
+def progress_bar(image, progress):
+    # Draw the progress bar
+    BAR_WIDTH = 400
+    BAR_HEIGHT = 15
+    BAR_POS = (20, 110)
+    cv2.rectangle(image, BAR_POS, (BAR_POS[0] + progress, BAR_POS[1] + BAR_HEIGHT), (0, 255, 0), -1)
+    cv2.rectangle(image, BAR_POS, (BAR_POS[0] + BAR_WIDTH, BAR_POS[1] + BAR_HEIGHT), (255, 255, 255), 2)
+    return
+
+def display_reps(image, angle, reps, stage, type_name = "Reps"):
+    # Display the bicep angle and number of reps on the image
+    if angle is not None:
+        cv2.putText(image, "Angle: {:.2f} deg".format(angle), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    cv2.putText(image, "{}: {}".format(type_name, reps), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    if stage is not None:
+        cv2.putText(image, "Stage: {}".format(stage), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    return
+
 
 # # Global Variables
 
-# In[ ]:
+# In[3]:
 
 
 video_capture_number = 0
@@ -35,7 +70,7 @@ BAR_WIDTH = 400
 
 # # Calculate Angles
 
-# In[ ]:
+# In[4]:
 
 
 #angle between any three points
@@ -54,40 +89,9 @@ def calculate_angle(a,b,c):
     return angle 
 
 
-# # Performance Bar
-
-# In[ ]:
-
-
-def draw_performance_bar(image, per, bar):
-    cv2.rectangle(image, (580, 50), (600, 380), (0, 255, 0), 3)
-    cv2.rectangle(image, (580, int(bar)), (600, 380), (0, 255, 0), cv2.FILLED)
-    cv2.putText(image, f'{int(per)}%', (565, 430), cv2.FONT_HERSHEY_PLAIN, 2,
-                (255, 0, 0), 2)
-    
-def progress_bar(image, progress):
-    # Draw the progress bar
-    BAR_WIDTH = 400
-    BAR_HEIGHT = 15
-    BAR_POS = (20, 110)
-    cv2.rectangle(image, BAR_POS, (BAR_POS[0] + progress, BAR_POS[1] + BAR_HEIGHT), (0, 255, 0), -1)
-    cv2.rectangle(image, BAR_POS, (BAR_POS[0] + BAR_WIDTH, BAR_POS[1] + BAR_HEIGHT), (255, 255, 255), 2)
-    
-def display_reps(image, angle, reps, stage):
-    # Display the bicep angle and number of reps on the image
-    cv2.putText(image, "Angle: {:.2f} deg".format(angle), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.putText(image, "Reps: {}".format(reps), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.putText(image, "Stage: {}".format(stage), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-
-def display_picture(exercise):
-    image = cv2.imread(r"/home/nuke/Desktop/project/AI-Personal-Trainer-Rep-Counter/{}.jpg".format(exercise))
-    cv2.imshow('Exercise Counter',image)
-    cv2.waitKey(1000)
-
-
 # # Adjust Camera position 
 
-# In[ ]:
+# In[5]:
 
 
 def adjust_camera_position(cap):
@@ -97,7 +101,7 @@ def adjust_camera_position(cap):
         position = False
         # Read a frame from the video capture.
         ret, frame = cap.read()
-
+        frame = cv2.resize(frame, (800, 500))
         # Convert the image from BGR (OpenCV's default color space) to RGB (MediaPipe's required color space).
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -143,18 +147,15 @@ def adjust_camera_position(cap):
         # Convert the image back from RGB to BGR.
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-        # Show the frame in a window.
-        cv2.imshow("Exercise Counter", frame)
-
-        # Wait for the user to press a key.
-        key = cv2.waitKey(1)
+        ret, jpeg = cv2.imencode(".jpg", frame)
+        yield (
+            b"--frame\r\n"
+            b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+        )
         
         if position == True:
             time.sleep(1)
             return
-        # If the user presses the 'q' key, then exit the loop.
-        if key == ord("q"):
-            break
 
     # Release the video capture and close all windows.
     return
@@ -162,7 +163,7 @@ def adjust_camera_position(cap):
 
 # # Arm Raise
 
-# In[ ]:
+# In[6]:
 
 
 def arm_raise_rep(cap, total_reps):
@@ -181,7 +182,7 @@ def arm_raise_rep(cap, total_reps):
         
         while reps < total_reps:
             ret, image = cap.read()
-
+            image = cv2.resize(image, (800, 500))
             # Convert the image to RGB format
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
@@ -254,29 +255,25 @@ def arm_raise_rep(cap, total_reps):
            
             
             # Exit loop if the 'q' key is pressed
-            cv2.imshow('Exercise Counter', image)                             
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            ret, jpeg = cv2.imencode(".jpg", image)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+            )
                 
     return
 
 
 # # Bicep Curls
 
-# In[ ]:
-from core.camera import VideoCamera
-camera = VideoCamera()
+# In[7]:
 
-def bicep_curl_rep(total_reps):
+
+def bicep_curl_rep(cap, total_reps):
     # Initialize the video capture object
     #cap = cv2.VideoCapture(video_capture_number)
     
     # Initialize variables
-    # print("in bicep_dfkasdjf")
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Unable to open camera")
     prev_reps = 0
     reps = 0
     start_curl = False
@@ -289,11 +286,9 @@ def bicep_curl_rep(total_reps):
     with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         
         while reps < total_reps:
-            # image = camera.get_frame()
             ret, image = cap.read()
-            print("dfddddddddddddd",image.size())
+            image = cv2.resize(image, (800, 500))
             # Convert the image to RGB format
-
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
             # Flip the image horizontally
@@ -370,10 +365,113 @@ def bicep_curl_rep(total_reps):
                 b"--frame\r\n"
                 b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
             )
-            # cv2.imshow('Exercise Counter', image)                             
+    
+    #cap.release()
+    #cv2.destroyAllWindows()
+    return
 
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
+
+# # Hammer Curls
+
+# In[8]:
+
+
+def hammer_curl_rep(cap, total_reps):
+    # Initialize the video capture object
+    #cap = cv2.VideoCapture(video_capture_number)
+    
+    # Initialize variables
+    prev_reps = 0
+    reps = 0
+    start_curl = False
+    end_curl = False
+    bicep_angle = 0
+    previous_bicep_angle = 0
+    progress = 0
+    stage = "down"
+    
+    with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        
+        while reps < total_reps:
+            ret, image = cap.read()
+            image = cv2.resize(image, (800, 500))
+            # Convert the image to RGB format
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image.flags.writeable = False
+            # Flip the image horizontally
+            image = cv2.flip(image, 1)
+
+            # Make detection
+            results = pose.process(image)
+
+            # Recolor back to BGR
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+
+            # Draw the pose landmarks on the image
+            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+            # Calculate the angle between the shoulder, elbow and wrist landmarks
+            if results.pose_landmarks is not None:
+                shoulder_landmark = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
+                elbow_landmark = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW]
+                wrist_landmark = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST]
+
+                shoulder = np.array([shoulder_landmark.x, shoulder_landmark.y])
+                elbow = np.array([elbow_landmark.x, elbow_landmark.y])
+                wrist = np.array([wrist_landmark.x, wrist_landmark.y])
+
+                bicep_angle = calculate_angle(shoulder, elbow, wrist)
+
+                # Check if the bicep is being curled
+                if bicep_angle > 160 and not start_curl:
+                    start_curl = True
+                    previous_bicep_angle = bicep_angle
+                    stage = "down"
+                elif bicep_angle < 40 and start_curl:
+                    end_curl = True
+                    start_curl = False
+                    stage = "up"
+                
+                #Percentage of success of pushup
+                per = np.interp(bicep_angle, (40, 160), (100, 0))
+
+                #Bar to show Pushup progress
+                bar = np.interp(bicep_angle, (40, 160), (50, 380))
+                # Count the number of bicep curls completed
+                
+                #increase rep count
+                if end_curl:
+                    reps += 1
+                    end_curl = False
+
+            # Update the progress bar
+            if reps != prev_reps:
+                prev_reps = reps
+                progress = int(reps / total_reps * BAR_WIDTH)
+            
+
+            progress_bar(image, progress)
+            display_reps(image, bicep_angle, reps, stage)
+            draw_performance_bar(image, per, bar)
+            
+            # Add pose correction visualization
+            if bicep_angle < 40:
+                # Red color for incorrect pose
+                mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
+            elif bicep_angle > 160:
+                # Red color for incorrect pose
+                mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
+            
+           
+            
+            # Exit loop if the 'q' key is pressed
+            ret, jpeg = cv2.imencode(".jpg", image)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+            )
     
     #cap.release()
     #cv2.destroyAllWindows()
@@ -382,7 +480,7 @@ def bicep_curl_rep(total_reps):
 
 # # Squat
 
-# In[ ]:
+# In[9]:
 
 
 def squat_rep(cap, total_reps):
@@ -403,6 +501,7 @@ def squat_rep(cap, total_reps):
 
         while reps < total_reps:
             ret, image = cap.read()
+            image = cv2.resize(image, (800, 500))
             # Convert the image to RGB format
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # Flip the image horizontally
@@ -471,9 +570,11 @@ def squat_rep(cap, total_reps):
                 mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
             
            
-            cv2.imshow('Exercise Counter', image)                             
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            ret, jpeg = cv2.imencode(".jpg", image)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+            )
                 
     #cap.release()
     #cv2.destroyAllWindows()  
@@ -482,7 +583,7 @@ def squat_rep(cap, total_reps):
 
 # # Shoulder Press
 
-# In[ ]:
+# In[10]:
 
 
 def shoulder_press_rep(cap, total_reps):
@@ -496,7 +597,7 @@ def shoulder_press_rep(cap, total_reps):
         while reps < total_reps:
             # Read frame
             ret, image = cap.read()
-
+            image = cv2.resize(image, (800, 500))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             # Flip the image horizontally
@@ -557,11 +658,11 @@ def shoulder_press_rep(cap, total_reps):
                 mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
             
             # Display frame
-            cv2.imshow('Exercise Counter', image)
-
-            # Exit on 'q' key press
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            ret, jpeg = cv2.imencode(".jpg", image)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+            )
 
     # Release video and close windows
     return
@@ -569,7 +670,7 @@ def shoulder_press_rep(cap, total_reps):
 
 # # Jumping Jacks
 
-# In[ ]:
+# In[11]:
 
 
 def jumping_jacks_rep(cap, total_reps):
@@ -583,7 +684,7 @@ def jumping_jacks_rep(cap, total_reps):
         while reps < total_reps:
             # read video feed
             ret, frame = cap.read()
-
+            frame = cv2.resize(frame, (800, 500))
             # flip image horizontally for natural viewing
             frame = cv2.flip(frame, 1)
 
@@ -648,11 +749,11 @@ def jumping_jacks_rep(cap, total_reps):
 
 
                 # display image
-                cv2.imshow('Exercise Counter', image)
-
-                # stop the program on the press of the 'q' key
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
     # release the video capture and close the window
     cap.release()
@@ -661,7 +762,7 @@ def jumping_jacks_rep(cap, total_reps):
 
 # # Right Knee Touches
 
-# In[ ]:
+# In[12]:
 
 
 def right_knee_touch_rep(cap, total_reps):
@@ -675,6 +776,7 @@ def right_knee_touch_rep(cap, total_reps):
         while reps < total_reps:
             # Read the frame from the camera
             ret, frame = cap.read()
+            frame = cv2.resize(frame, (800, 500))
             if not ret:
                 print("Error reading the camera frame.")
                 break
@@ -728,16 +830,86 @@ def right_knee_touch_rep(cap, total_reps):
                 draw_performance_bar(image, left_per, left_bar)
 
                 # Display the frame
-                cv2.imshow("Exercise Counter", image)
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
-                # Exit the loop if the 'q' key is pressed
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+    return    
+
+
+# # Walk
+
+# In[13]:
+
+
+def walk(cap, total_reps):
+    # Initialize variables for rep counting and pose correction
+    reps = 0
+    prev_reps = 0
+    progress = 0
+    status = False
+    if total_reps < 10:
+        total_reps*=10
+    with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        while  reps < total_reps:
+            # Read the frame from the camera
+            ret, frame = cap.read()
+            frame = cv2.resize(frame, (800, 500))
+            if not ret:
+                print("Error reading the camera frame.")
+                break
+
+            # Flip the frame horizontally for a more natural viewing experience
+            frame = cv2.flip(frame, 1)
+
+            # Convert the frame to RGB format and process it with Mediapipe
+            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image.flags.writeable = False
+            results = pose.process(image)
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+            # Calculate the angle between the right shoulder, right hip, and right knee landmarks
+            if results.pose_landmarks is not None:
+                
+                left_knee = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE]
+                right_knee = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE]
+                
+                left_knee = np.array([left_knee.x, left_knee.y])
+                right_knee = np.array([right_knee.x, right_knee.y])
+                
+                if status:
+                    if left_knee[0] > right_knee[0]:
+                        reps += 1
+                        status = False
+
+                else:
+                    if left_knee[0] < right_knee[0]:
+                        reps += 1
+                        status = True
+
+                if reps != prev_reps:
+                    prev_reps = reps
+                    progress = int(reps / total_reps * BAR_WIDTH)
+
+
+                # Draw the progress bar
+                progress_bar(image, progress)
+                display_reps(image, None, reps, None, "Steps")
+                # Display the frame
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
 
 # # Left Knee Touches
 
-# In[ ]:
+# In[14]:
 
 
 def left_knee_touch_rep(cap, total_reps):
@@ -751,6 +923,7 @@ def left_knee_touch_rep(cap, total_reps):
         while reps < total_reps:
             # Read the frame from the camera
             ret, frame = cap.read()
+            frame = cv2.resize(frame, (800, 500))
             if not ret:
                 print("Error reading the camera frame.")
                 break
@@ -804,16 +977,16 @@ def left_knee_touch_rep(cap, total_reps):
                 draw_performance_bar(image, right_per, right_bar)
 
                 # Display the frame
-                cv2.imshow("Exercise Counter", image)
-
-                # Exit the loop if the 'q' key is pressed
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
 
 # # Crunches
 
-# In[ ]:
+# In[15]:
 
 
 def crunches_rep(cap, total_reps):
@@ -835,6 +1008,7 @@ def crunches_rep(cap, total_reps):
     with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while reps < total_reps:    
             ret, image = cap.read()
+            image = cv2.resize(image, (800, 500))
 
             # Convert the image to RGB format
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -901,11 +1075,119 @@ def crunches_rep(cap, total_reps):
                     mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
 
                 # Show the image
-                cv2.imshow('Exercise Counter', image)
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
-                # Exit loop if the 'q' key is pressed
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+        # Release the video capture object and close all windows
+        # cap.release()
+        #cv2.destroyAllWindows()
+        return
+
+
+# # Sit ups
+
+# In[16]:
+
+
+def sit_ups_rep(cap, total_reps):
+
+    # Initialize the video capture object
+    # cap = cv2.VideoCapture(video_capture_number)
+
+    # Initialize variables
+    prev_reps = 0
+    reps = 0
+    start_situp = False
+    countdown = 0
+    progress = 0
+    stage = "down"
+    halfway = False
+    range_flag = False
+    
+    with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        while reps < total_reps:    
+            ret, image = cap.read()
+            image = cv2.resize(image, (800, 500))
+            # Convert the image to RGB format
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # Flip the image horizontally
+            image = cv2.flip(image, 1)
+
+            # Make detection
+            results = pose.process(image)
+
+            # Recolor back to BGR
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+            # Draw the pose landmarks on the image
+            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+            # Calculate the angle between the shoulder, hip and knee landmarks
+            if results.pose_landmarks is not None:
+                landmarks = results.pose_landmarks.landmark
+                left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x, landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
+                left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
+                left_heel = [landmarks[mp_pose.PoseLandmark.LEFT_HEEL.value].x, landmarks[mp_pose.PoseLandmark.LEFT_HEEL.value].y]
+                left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                
+                angle_knee = calculate_angle(left_hip, left_knee, left_heel)
+                angle_body = calculate_angle(left_shoulder, left_hip, left_knee)
+                
+                if (angle_body < 80 and angle_body > 50) and stage == "down": #Half-way there (Used for checking bad situps)
+                    halfway = True
+                
+                if angle_body < 40 and stage == "down": #Complete situp
+                    stage = "up"
+                    range_flag = True
+                    
+                if angle_body > 90 and angle_knee < 60: #Resting position;to check if situp was done properly
+                    stage = "down"
+                    
+                    if halfway: #Check if a rep was attempted
+                        if range_flag: #Check if a proper rep was performed
+                            reps += 1
+                            feedback = "Good repetition!"
+                        else:
+                            feedback = "Did not perform sit up completely."
+                        range_flag = False #Reset vars
+                        halfway = False
+
+                if angle_knee > 70: #Triggers anytime the legs are not tucked in
+                    feedback = "Keep legs tucked in closer"
+                
+                #Percentage of success of pushup
+                per = np.interp(angle_body, (130, 40), (0, 100))
+
+                #Bar to show Pushup progress
+                bar = np.interp(angle_body, (130, 40), (50, 380))
+                
+                if reps != prev_reps:
+                    prev_reps = reps
+                    progress = int(reps / total_reps * BAR_WIDTH)
+
+
+                # Draw the progress bar
+                progress_bar(image, progress)
+                display_reps(image, angle_body, reps, stage)
+                draw_performance_bar(image, per, bar)
+
+                if angle_body > 100 or angle_knee>60:
+                # Red color for incorrect pose
+                    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
+                elif angle_body < 40 or angle_knee>60:
+                    # Red color for incorrect pose
+                    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
+
+                # Show the image
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
         # Release the video capture object and close all windows
         # cap.release()
@@ -915,7 +1197,7 @@ def crunches_rep(cap, total_reps):
 
 # # Push Ups
 
-# In[ ]:
+# In[17]:
 
 
 def pushups_rep(cap, total_reps):
@@ -937,6 +1219,7 @@ def pushups_rep(cap, total_reps):
     with mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while reps < total_reps:
             ret, image = cap.read()
+            image = cv2.resize(image, (800, 500))
 
             # Convert the image to RGB format
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -1016,29 +1299,43 @@ def pushups_rep(cap, total_reps):
                     mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing.DrawingSpec(color=(255, 0 , 0), thickness=2, circle_radius=2), connection_drawing_spec = mp_drawing.DrawingSpec(color=(255, 0, 0), thickness=2, circle_radius=2))
 
                 # Show the image
-                cv2.imshow('Exercise Counter', image)
-
-                # Exit loop if the 'q' key is pressed
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                ret, jpeg = cv2.imencode(".jpg", image)
+                yield (
+                    b"--frame\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n\r\n"
+                )
 
         # Release the video capture object and close all windows
         #cap.release()
         #cv2.destroyAllWindows()
         return
 
-# text_to_speech
-def text_to_speech(text):
-    output = gTTS(text=text, lang=language, slow=False)
-    date_string = datetime.now().strftime("%d%m%Y%H%M%S")
-    filename = "output"+date_string+"audio.mp3"
-    output.save(filename)
-    playsound(filename)
-    os.remove(filename)
 
-# # Difficulty Level
+# # Main function
 
-# In[ ]:
+# In[31]:
+
+
+def function_map():
+    function_mapping = {"bicepCurls": bicep_curl_rep, "squats": squat_rep, "pushups": pushups_rep, "crunches":crunches_rep,
+                       "jumpingjacks":jumping_jacks_rep, "RightKneeTouches":right_knee_touch_rep, 
+                        "LeftKneeTouches":left_knee_touch_rep, "shoulderPress":shoulder_press_rep, "armRaise":arm_raise_rep, "hammerCurl":hammer_curl_rep, "SitUps":sit_ups_rep,
+                       "walk": walk}
+    return function_mapping
+
+def routine(set = 0):  
+    workout_routine = ["walk", "jumpingjacks"]
+    if set == 1:
+        workout_routine.extend(["bicepCurls", "shoulderPress", "RightKneeTouches", "squats"])
+    elif set == 2:
+        workout_routine.extend(["crunches", "pushups", "hammerCurl", "armRaise", "SitUps" ])
+    #workout_routine = ["bicepCurls", "squats", "jumpingjacks", "pushups", "crunches","jumpingjacks","armRaise","shoulderPress","LeftKneeTouches", "hammerCurl", "RightKneeTouches", "SitUps", "walk"]
+    #workout_routine = ["hammerCurl"]
+    print(workout_routine)
+    return workout_routine
+
+
+# In[32]:
 
 
 def difficulty(level):
@@ -1050,58 +1347,44 @@ def difficulty(level):
     else:
         return 1
 
+def level_multiplier(level, base):
+    return level * base
 
-# # Total Repetitions
-
-# In[ ]:
-
-
-def total_repetitions(level):
-    base_reps = 5
-    return level * base_reps
+#def predefined_workout():
+#    return total_reps, cooldown_period
 
 
-# # Main function
-
-# In[ ]:
+# In[33]:
 
 
-def function_map():
-    function_mapping = {"bicep_curls": bicep_curl_rep, "squats": squat_rep, "pushups": pushups_rep, "crunches":crunches_rep,
-                       "jumpingjacks":jumping_jacks_rep, "RightKneeTouches":right_knee_touch_rep, 
-                        "LeftKneeTouches":left_knee_touch_rep, "shoulderPress":shoulder_press_rep, "armRaise":arm_raise_rep}
-    return function_mapping
-def routine():   
-    workout_routine = ["bicep_curls", "squats", "jumpingjacks", "pushups", "crunches","jumpingjacks","armRaise","shoulderPress","LeftKneeTouches"]
-    #workout_routine = ["armRaise"]
-    return workout_routine
-
-
-# In[ ]:
-
-
-def main():
+def main(cap):
     
     #Please enter the difficulty level
+    
+
     difficulty_level = input("Easy, Medium or Hard: ")
+    set = int(input("Set 1 or Set 2:"))
     level = difficulty(difficulty_level)
-    total_reps = total_repetitions(level)
+    total_reps = level_multiplier (level, 5)
+    cooldown_period = level_multiplier (level, 5)
     function_mapping = function_map()
-    workout_routine = routine()
-    cap = cv2.VideoCapture(video_capture_number)
-    #adjust_camera_position(cap)
-    #display_picture("bicep_curls")
-    #audio.text_to_speech("You have chosen " + difficulty_level + " level of difficulty. Let's start, you got this !")
+    workout_routine = routine(set)
+    camera_position = adjust_camera_position(cap)
+    for i in camera_position:
+        yield(i)
+    picture = display_picture("start")
+    for i in picture:
+        yield(i)
+    audio.text_to_speech("You have chosen " + difficulty_level + " level of difficulty. Let's start, you got this !")
     
     for exercise in workout_routine:
-        display_picture("bicep_curls")
-        text_to_speech("Next Exercise is " + exercise + ", The exercise starts in ")
+        picture = display_picture(exercise)
+        for i in picture:
+            yield(i)
+        audio.text_to_speech("Next Exercise is " + exercise + ", The exercise starts in ")
         for i in range(2,0,-1):
-            text_to_speech(str(i))
+            audio.text_to_speech(str(i))
             time.sleep(1)
-        function_mapping[exercise](cap,total_reps)
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-
+        output = function_mapping[exercise](cap,total_reps)
+        for i in output:
+            yield(i)

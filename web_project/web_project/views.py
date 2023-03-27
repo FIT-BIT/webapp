@@ -9,18 +9,18 @@ import threading
 from django.http import StreamingHttpResponse
 from django.views.decorators import gzip
 from  core import AudioCommSys as audio
-from crypt import methods
+#from crypt import methods
 from requests import Response
 from core import ExercisesModule as trainer
 # from core.camera import VideoCamera
-from core.exercise_counter import bicep_curl_rep
+from core.exercise_counter import bicep_curl_rep, main
 
 
 def gen():
     for i in range(0, 5):
         level = 1
-        # cap = cv2.VideoCapture(0)
-        for i in bicep_curl_rep(5):
+        cap = cv2.VideoCapture(0)
+        for i in main(cap):
             yield i
         # for i in trainer.start_workout_session(level).complete_path("Easy"):
         #     yield i
