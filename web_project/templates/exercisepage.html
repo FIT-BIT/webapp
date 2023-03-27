@@ -1,9 +1,8 @@
-{% comment %} <h1>exercisepage</h1> {% endcomment %}
-<img id="bg" src="{% url 'video_feed' %}" alt="you"  style="border: 5px solid #555; display: block; margin: auto;"/>
-{% comment %} <video id="video" width="900" height="480" autoplay></video>
+{% extends 'base.html' %}
 
-<script>
-var video = document.getElementById("video");
-video.src = "{% url 'video_feed' %}";
-</script> {% endcomment %}
+{% block body %}
 
+<img style="margin-top:100px;" id="bg" src="{% url 'video_feed' %}" alt="you"
+    style="border: 5px solid #555; display: block; margin: auto;" />
+
+{% endblock %}

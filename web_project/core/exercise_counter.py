@@ -142,7 +142,7 @@ def adjust_camera_position(cap):
                 elif distance_upper < 0.5:
                     cv2.putText(frame, "Move backward, upper body not in frame", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
                 else:
-                    cv2.putText(frame, "Adjust camera position until entire body is in frame", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                    cv2.putText(frame, "Entire body should be in frame", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
         # Convert the image back from RGB to BGR.
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
