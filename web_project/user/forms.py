@@ -12,10 +12,11 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('phone', 'first_name', 'last_name', 'isGymTrainer', 'isPhysiotherapist', 'password1', 'password2')
+        fields = ('phone', 'first_name', 'last_name', 'isGymTrainer', 'isPhysiotherapist','isTrainee', 'password1', 'password2')
         labels = {
             'isGymTrainer': _('Do you want to register as a Gym trainer?'),
             'isPhysiotherapist': _('Do you want to register as a Physiotherapist?'),
+            'isTrainee': _('Do you want to register as a Trainee?'),
         }
 
 
