@@ -1,5 +1,8 @@
 from django.http.response import HttpResponse, HttpResponseNotModified
 from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+
 
 import cv2
 import threading
@@ -46,8 +49,14 @@ def video_feed(request):
 #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 def home(request):
-    return render( request, 'homepage.html' )
+    return render(request, 'homepage.html')
     # return render( request, 'index.html' )
+    
+def workouts(request):
+    return render(request, 'workouts.html')
+
+def myworkouts(request):
+    return render(request, 'myworkouts.html')    
 
 class Camera:
     def __init__(self):
@@ -81,3 +90,4 @@ def generator(camera):
 def exercise(request):
     # exercise_counter.main()
     return render (request,'exercisepage.html')
+

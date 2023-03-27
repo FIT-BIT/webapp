@@ -26,6 +26,8 @@ urlpatterns = [
     path('exercise', views.exercise, name='exercisepage'),
     path('video_feed/', views.video_feed, name='video_feed'),
     path('video_feed_camera/', views.video_feed_camera, name='video_feed_camera'),
-
+    path('workouts', views.workouts, name='workouts'),
+    path('myworkouts', views.myworkouts, name='myworkouts'),
+    path('register', include('user.urls')),
     # path('contact', views.contact, name='contact'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
