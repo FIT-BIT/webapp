@@ -17,15 +17,14 @@ from core.exercise_counter import bicep_curl_rep, main
 
 
 def gen():
-    for i in range(0, 5):
-        level = 1
-        cap = cv2.VideoCapture(0)
-        for i in main(cap):
-            yield i
-        # for i in trainer.start_workout_session(level).complete_path("Easy"):
-        #     yield i
-            # print("hereee ------------------------------------")
-        print("DONE!")
+    level = 1
+    cap = cv2.VideoCapture(0)
+    for i in main(cap):
+        yield i
+    # for i in trainer.start_workout_session(level).complete_path("Easy"):
+    #     yield i
+        # print("hereee ------------------------------------")
+    print("DONE!")
     
 
 @gzip.gzip_page

@@ -1331,7 +1331,6 @@ def routine(set = 0):
         workout_routine.extend(["crunches", "pushups", "hammerCurl", "armRaise", "SitUps" ])
     #workout_routine = ["bicepCurls", "squats", "jumpingjacks", "pushups", "crunches","jumpingjacks","armRaise","shoulderPress","LeftKneeTouches", "hammerCurl", "RightKneeTouches", "SitUps", "walk"]
     #workout_routine = ["hammerCurl"]
-    print(workout_routine)
     return workout_routine
 
 
@@ -1388,3 +1387,7 @@ def main(cap):
         output = function_mapping[exercise](cap,total_reps)
         for i in output:
             yield(i)
+    picture = display_picture("end")
+    for i in picture:
+        yield(i)
+    audio.text_to_speech("Well done, that was a great workout")
