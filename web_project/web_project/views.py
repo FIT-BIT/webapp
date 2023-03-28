@@ -15,3 +15,10 @@ def workouts(request):
 
 def myworkouts(request):
     return render(request, 'myworkouts.html')
+
+def myRoutine(request):
+    context = {}
+    context['workout1'] = ['squats','leg raise','crunches','situps']
+    context['workout2'] = ['squats','leg raise','crunches','situps']
+    return render(request, 'myRoutine.html',context)
+

@@ -26,6 +26,7 @@ urlpatterns = [
     path('', views.home, name='homepage'),
     path('workouts', views.workouts, name='workouts'),
     path('myworkouts', views.myworkouts, name='myworkouts'),
+    path('myRoutine', views.myRoutine, name='myRoutine'),
     path('register', include('user.urls')),
     path('workout_routine_create/', user_views.create_workout_routine, name='create_workout_routine'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
