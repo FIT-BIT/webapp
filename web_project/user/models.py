@@ -79,3 +79,9 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+class medHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    height = models.IntegerField()
+    weight = models.IntegerField()
+    history = models.CharField(max_length=150)
