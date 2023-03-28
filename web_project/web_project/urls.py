@@ -30,4 +30,6 @@ urlpatterns = [
     path('myworkouts', views.myworkouts, name='myworkouts'),
     path('register', include('user.urls')),
     # path('contact', views.contact, name='contact'),
+    path('profile', views.profile, name='my_profile'),
+    path('editprofile', views.edit_profile, name='edit_profile'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+<div class="about-heading">
+    <div class="container">
+        <h2>Edit your information</h2>
+    </div>
+</div>
+<br>
+
+
+<div style=" width: 500px; margin: 0px auto; color: rgb(189 205 0); padding: 20px 20px;
+padding: 10px;
+border: 3px solid gray;">
+
+    <form method="POST" action="{% url 'my_profile' %}"
+        style=" padding-top: 20px; padding-left: 10px; padding-right: 10px; ">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="Nitrogen" style="font-size: 17px"><b>First Name</b></label>
+            <input type="text" class="form-control" name="first" value={{user.first_name}} required>
+        </div>
+
+        <div class="form-group">
+            <label for="Nitrogen" style="font-size: 17px"><b>Last Name</b></label>
+            <input type="text" class="form-control" name="last" value={{user.last_name}} required>
+            <!-- <input type="text" class="form-control" name="bio" value={{resume.desc}} id="floatingInput" placeholder="Bio" required> -->
+        </div>
+
+        <div class="form-group">
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+                integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+                integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+            <!-- <label for="Nitrogen" style="font-size: 17px"><b>State</b></label> -->
+            {% if ustate == "NA" %}
+            <!-- <input type="text" class="form-control" name="state" placeholder="NA" required> -->
+            <label for="state" style="font-size: 17px"><b>State</b></label>
+            <select name="state" class="form-control" id="state" placeholder="NA" name="state"
+                onchange="populate(this.id,'district')" style="font-weight: bold" required>
+                <option></option>
+                {% for opt in state %}
+                <option>{{opt}}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <!-- <input type="text" class="form-control" name="state" value={{state}} required> -->
+            <label for="state" style="font-size: 17px"><b>State</b></label>
+            <select name="state" class="form-control" id="state" value="{{ustate}}"" name="state"
+                onchange="populate(this.id,'district')" required>
+                <option selected>{{ustate}}</option>
+                {% for opt in state %}
+                <option>{{opt}}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+                integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+                integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+
+            <!-- <label for="Nitrogen" style="font-size: 17px"><b>City</b></label> -->
+            <label for="district" style="font-size: 17px"><b>City</b></label>
+            {% if ucity == "NA" %}
+            <select name="district" class="form-control" id="district" placeholder="NA" required>
+            {% else %}
+            <select name="district" class="form-control" id="district" placeholder="Select district" value="{{ucity}}" required>
+                <option selected>{{ucity}}</option>
+            {% endif %}
+
+
+
+
+            <label for="district" style="font-size: 17px"><b>City</b></label>
+            <select name="district" class="form-control" id="district" placeholder="Select district" required>
+            
+            </select>
+
+
+        </div>
+
+
+
+
+        <script>
+            function populate(s1, s2) {
+                var s1 = document.getElementById(s1);
+                var s2 = document.getElementById(s2);
+                s2.innerHTML = "";
+                if (s1.value == "Andhra Pradesh") {
+                    var optionArray = [ "Anantapur|Anantapur", "Chittor|Chittor", "Guntur|Guntur", "Kurnool|Kurnool", "West Godavari|West Godavari"];
+                }
+
+                else if (s1.value == "Chattisgarh") {
+                    var optionArray = ["Balodabazar|Balodabazar", "Bijapur|Bijapur", "Dantewada|Dantewada", "Dhamtari|Dhamtari", "Durg|Durg", "Kanker|Kanker", "Mahasamund|Mahasamund", "Narayanpur|Narayanpur", "Surajpur|Surajpur"];
+                }
+
+                else if (s1.value == "All") {
+                    var optionArray = ["All|All"];
+                }
+
+                else if (s1.value == "Gujarat") {
+                    var optionArray = [  "Ahmedabad|Ahmedabad", "Amreli|Amreli", "Anand|Anand", "Banaskanth|Banaskanth", "Bharuch|Bharuch", "Dahod|Dahod", "Gandhinagar|Gandhinagar", "Jamnagar|Jamnagar", "Junagarh|Junagarh", "Kachchh|Kachchh", "Kheda|Kheda", "Morbi|Morbi", "Narmada|Narmada", "Navsari|Navsari"];
+                }
+
+                else if (s1.value == "Haryana") {
+                    var optionArray = [  "Gurgaon|Gurgaon", "Jind|Jind", "Kaithal|Kaithal", "Kurukshetra|Kurukshetra", "Sirsa|Sirsa", "Sonipat|Sonipat"];
+                }
+
+                else if (s1.value == "Himachal Pradesh") {
+                    var optionArray = [  "Chamba|Chamba", "Hamirpur|Hamirpur", "Kangra|Kangra", "Kullu|Kullu", "Mandi|Mandi", "Solan|Solan", "Una|Una"];
+                }
+
+                else if (s1.value == "Jammu and Kashmir") {
+                    var optionArray = [  "Anantnag|Anantnag", "Badgam|Badgam", "Jammu|Jammu", "Kupwara|Kupwara", "Srinagar|Srinagar", "Udhampur|Udhampur"];
+                }
+
+                else if (s1.value == "Karnataka") {
+                    var optionArray = [  "Bagalkot|Bagalkot", "Bangalore|Bangalore", "Chamrajnagar|Chamrajnagar", "Chikmagalur|Chikmagalur", "Davangere|Davangere", "Mysore|Mysore"];
+                }
+
+                else if (s1.value == "Kerala") {
+                    var optionArray = [  "Alappuzha|Alappuzha", "Ernakulam|Ernakulam", "Idukki|Idukki", "Kannur|Kannur", "Kasargod|Kasargod", "Thiruvananthapuram|Thiruvananthapuram"];
+                }
+
+                else if (s1.value == "Madhya Pradesh") {
+                    var optionArray = [  "Anupur|Anupur", "Ashoknagar|Ashoknagar", "Badwani|Badwani", "Bhopal|Bhopal", "Dewas|Dewas"];
+                }
+
+                else if (s1.value == "Maharashtra") {
+                    var optionArray = [  "Ahmednagar|Ahmednagar", "Chandrapur|Chandrapur", "Jalgaon|Jalgaon", "Mumbai|Mumbai", "Nagpur|Nagpur"];
+                }
+
+                else if (s1.value == "NCT of Delhi") {
+                    var optionArray = ["Delhi|Delhi"];
+                }
+
+                else if (s1.value == "Nagaland") {
+                    var optionArray = [  "Dimapur|Dimapur", "Kohima|Kohima"];
+                }
+
+                else if (s1.value == "Odisha") {
+                    var optionArray = [  "Angul|Angul", "Balasore|Balasore", "Bargarh|Bargarh", "Cuttack|Cuttack"];
+                }
+
+                else if (s1.value == "Pondicherry") {
+                    var optionArray = ["Karaikal|Karaikal"];
+                }
+
+                else if (s1.value == "Punjab") {
+                    var optionArray = [  "Amritsar|Amritsar", "Barnala|Barnala", "Bhatinda|Bhatinda", "Fazilka|Fazilka", "Ferozpur|Ferozpur", "Gurdaspur|Gurdaspur", "Hoshiarpur|Hoshiarpur", "Jalandhar|Jalandhar", "Ludhiana|Ludhiana", "Moga|Moga", "Ropar (Rupnagar)|Ropar (Rupnagar)", "Sangrur|Sangrur", "Tarntaran|Tarntaran", "kapurthala|kapurthala"];
+                }
+
+                else if (s1.value == "Rajasthan") {
+                    var optionArray = [  "Jaipur|Jaipur", "Jodhpur|Jodhpur", "Kota|Kota", "Nagaur|Nagaur"];
+                }
+
+                else if (s1.value == "Tamil Nadu") {
+                    var optionArray = [  "Coimbatore|Coimbatore", "Dindigul|Dindigul", "Erode|Erode", "Madurai|Madurai"];
+                }
+
+                else if (s1.value == "Telangana") {
+                    var optionArray = [  "Adilabad|Adilabad", "Hyderabad|Hyderabad", "Jagityal|Jagityal", "Karimnagar|Karimnagar"];
+                }
+
+                else if (s1.value == "Tripura") {
+                    var optionArray = [  "Gomati|Gomati", "South District|South District"];
+                }
+
+                else if (s1.value == "Uttar Pradesh") {
+                    var optionArray = [  "Agra|Agra", "Aligarh|Aligarh", "Allahabad|Allahabad", "Ambedkarnagar|Ambedkarnagar", "Balrampur|Balrampur", "Barabanki|Barabanki", "Bulandshahar|Bulandshahar", "Etah|Etah", "Fatehpur|Fatehpur", "Firozabad|Firozabad", "Ghaziabad|Ghaziabad", "Ghazipur|Ghazipur", "Gorakhpur|Gorakhpur", "Mathura|Mathura", "Meerut|Meerut", "Varanasi|Varanasi"];
+                }
+
+                else if (s1.value == "Uttrakhand") {
+                    var optionArray = [  "Dehradoon|Dehradoon", "Haridwar|Haridwar"];
+                }
+
+                else if (s1.value == "West Bengal") {
+                    var optionArray = [  "Bankura|Bankura", "Darjeeling|Darjeeling", "Jalpaiguri|Jalpaiguri", "Malda|Malda"];
+                }
+
+
+
+
+
+                for (var option in optionArray) {
+                    var pair = optionArray[option].split("|");
+                    var newOption = document.createElement("option");
+                    newOption.value = pair[0];
+                    newOption.innerHTML = pair[1];
+                    s2.options.add(newOption);
+                }
+            }
+        </script>
+
+
+
+
+        <div class="d-flex justify-content-center">
+            <!-- <button type="submit" class="btn btn-info"
+                style="background-color: rgb(189 205 0 / 52%); color: black; font-weight: bold; width: 130px; height: 50px; border-radius: 12px; font-size: 21px; ">
+                Predict
+            </button> -->
+            <button type="submit" style="border: 3px solid gray;" class="btn1">Save</button>
+        </div>
+
+
+    </form>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('select').selectize({
+                sortField: 'text'
+            });
+        });
+    </script>
+</div>
+
+<br><br>
+
+{% endblock %}

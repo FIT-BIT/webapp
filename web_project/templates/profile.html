@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block body %}
+
+<style>
+    .card32 {
+        width: 355px;
+        background-color: #efefef;
+        border: none;
+        cursor: pointer;
+        transition: all 0.5s
+    }
+
+    .image img {
+        transition: all 0.5s
+    }
+
+    .card32:hover .image img {
+        transform: scale(1.5)
+    }
+
+    .btn {
+        height: 140px;
+        width: 140px;
+        border-radius: 50%
+    }
+
+    .name {
+        font-size: 22px;
+        font-weight: bold
+    }
+
+    .idd {
+        font-size: 14px;
+        font-weight: 600
+    }
+
+    .idd1 {
+        font-size: 12px
+    }
+
+    .number {
+        font-size: 22px;
+        font-weight: bold
+    }
+
+    .follow {
+        font-size: 12px;
+        font-weight: 500;
+        color: #444444
+    }
+
+    .btn1 {
+        height: 40px;
+        width: 150px;
+        border: none;
+        background-color: #000;
+        color: #aeaeae;
+        font-size: 15px
+    }
+
+    .text span {
+        font-size: 13px;
+        color: #545454;
+        font-weight: 500
+    }
+
+    .icons i {
+        font-size: 19px
+    }
+
+    hr .new1 {
+        border: 1px solid
+    }
+
+    .join {
+        font-size: 14px;
+        color: #a0a0a0;
+        font-weight: bold
+    }
+
+    .date {
+        background-color: #ccc
+    }
+
+    .container {
+        height: 30vh;
+        min-height: 10vh;
+        max-height: 50vh;
+    }
+</style>
+
+<div class="about-heading">
+    <div class="container">
+        <h2>My Profile</h2>
+    </div>
+</div>
+<br>
+<div style=" width: 400px; margin: 0px auto; color: #9a829b; padding: 10px 10px;
+border: 3px solid gray;">
+
+    <div style="text-align:center; padding: 10px 10px; height: 60vh;
+    min-height: 60vh;
+    max-height: 60vh;" class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+        <div style="text-align:center;" class="card32 p-4">
+            <div class=" image d-flex flex-column justify-content-center align-items-center">
+                <button style="text-align:center;" class="btn btn-secondary">
+                    <div style="text-align:center;">
+                        <!-- <img src="{% static 'home/images/farmer.jpg' %}" height="100" width="100" /> -->
+                    </div>
+                </button>
+                <br>
+                <span style="text-align:center;" class="name mt-3">{{request.user.first_name}}
+                    {{request.user.last_name}}</span>
+                <br>
+                <span style="text-align:center; font-size:medium;" class="name mt-3">{{request.user.phone}}</span>
+                <br>
+                {% if request.user.isGymTrainer %}
+                <span class="idd">Gym Trainer</span>
+                {% elif request.user.isPhysioTherapist %}
+                <span class="idd">Physio Therapist</span>
+                {% else %}
+                <span class="idd">Trainee</span>
+                {% endif %}
+                <br>
+                <!-- <div class="d-flex flex-row justify-content-center align-items-center gap-2"> 
+                    <span class="idd1">Oxc4c16a645_b21a</span> 
+                    <span><i class="fa fa-copy"></i></span> 
+                </div> -->
+                <!-- <br>
+                <div class="d-flex flex-row justify-content-center align-items-center mt-3"> 
+                    <span class="number">1069 
+                        <span class="follow">Followers</span>
+                    </span> 
+                </div> -->
+
+                <div class="text mt-3">
+                    <span>
+                        Height:
+                        {% for x in bmi %}
+                        {{x.weight}}
+                        {% endfor %}
+                        <br>
+                        Weight:
+                        {% for x in bmi %}
+                        {{x.height}}
+                        {% endfor %}
+                    </span>
+                </div>
+
+                <form method="POST" action="{% url 'edit_profile' %}"
+                    style=" padding-top: 20px; padding-left: 10px; padding-right: 10px; ">
+                    {% csrf_token %}
+                    <div class=" d-flex mt-2">
+                        <button class="btn1 btn-dark">Edit Profile</button>
+                    </div>
+
+                </form>
+                <br>
+
+                <!-- <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> 
+                    <span>
+                        <i class="fa fa-twitter"></i>
+                    </span> 
+                    <span>
+                        <i class="fa fa-facebook-f"></i>
+                    </span> 
+                    <span>
+                        <i class="fa fa-instagram"></i>
+                    </span> 
+                    <span>
+                        <i class="fa fa-linkedin"></i>
+                    </span> 
+                </div>
+                <br> -->
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+
+{% endblock body %}
