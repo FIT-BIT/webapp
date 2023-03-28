@@ -1356,13 +1356,14 @@ def level_multiplier(level, base):
 # In[33]:
 
 
-def main(cap):
+def main(cap,difficulty_level,set):
     
     #Please enter the difficulty level
     
-
-    difficulty_level = input("Easy, Medium or Hard: ")
-    set = int(input("Set 1 or Set 2:"))
+    if (not difficulty_level):
+        return
+    # difficulty_level = input("Easy, Medium or Hard: ")
+    # set = int(input("Set 1 or Set 2:"))
     level = difficulty(difficulty_level)
     total_reps = level_multiplier (level, 5)
     cooldown_period = level_multiplier (level, 5)
