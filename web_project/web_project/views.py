@@ -109,8 +109,8 @@ def exercise(request):
 
 def myRoutine(request):
     context = {}
-    context['workout1'] = ["Walk", "Jumping Jacks","Bicep Curls", "Shoulder Press", "Right Knee Touches", "squats"]
-    context['workout2'] = ["Walk", "Jumping Jacks","Crunches", "Push Ups", "Hammer Curl", "Arm Raise", "Sit Ups"]
+    context['workout1'] = ["Walk", "Jumping Jacks","Bicep Curls", "Shoulder Press", "Squats", "Crunches", "Push Ups"]
+    context['workout2'] = ["Walk", "Jumping Jacks","Right Knee Touches", "Hammer Curl", "Arm Raise", "Sit Ups","Crunches"]
     return render(request, 'myRoutine.html',context)
 
 
