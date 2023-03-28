@@ -264,17 +264,13 @@ def arm_raise_rep(cap, total_reps):
 
 # # Bicep Curls
 
-# In[ ]:
-from core.camera import VideoCamera
-camera = VideoCamera()
 
-def bicep_curl_rep(total_reps):
+def bicep_curl_rep(cap,total_reps):
     # Initialize the video capture object
     #cap = cv2.VideoCapture(video_capture_number)
     
     # Initialize variables
     # print("in bicep_dfkasdjf")
-    cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("Unable to open camera")
     prev_reps = 0

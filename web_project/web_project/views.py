@@ -2,7 +2,7 @@ from django.http.response import HttpResponse, HttpResponseNotModified
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-
+import numpy as np
 
 import cv2
 import threading
@@ -14,6 +14,7 @@ from requests import Response
 from core import ExercisesModule as trainer
 # from core.camera import VideoCamera
 from core.exercise_counter import bicep_curl_rep
+from core.gameControlers import main as gameControls
 
 
 def gen():
@@ -105,23 +106,17 @@ def exercise(request):
 
 def generateGame():
 	# grab global references to the output frame and lock variables
-	global outputFrame, lock
-	# loop over frames from the output stream
-	while True:
-		# wait until the lock is acquired
-		with lock:
-			# check if the output frame is available, otherwise skip
-			# the iteration of the loop
-			if outputFrame is None:
-				continue
-			# encode the frame in JPEG format
-			(flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
-			# ensure the frame was successfully encoded
-			if not flag:
-				continue
-		# yield the output frame in the byte format
-		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
-			bytearray(encodedImage) + b'\r\n')
+    for i in gameControls():
+        print(i)
+        
+        # encode the frame in JPEG format
+        (flag, encodedImage) = cv2.imencode(".jpg",i)
+        # ensure the frame was successfully encoded
+        if not flag:
+            continue
+        # yield the output frame in the byte format
+        yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
+            encodedImage.tobytes() + b'\r\n')
 
 
 def game(request):

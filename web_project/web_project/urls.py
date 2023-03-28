@@ -27,6 +27,7 @@ urlpatterns = [
     path('game', views.game, name='gamepage'),
     path('video_feed/', views.video_feed, name='video_feed'),
     path('video_feed_camera/', views.video_feed_camera, name='video_feed_camera'),
+    path('video_feed_game/', views.video_feed_game, name='video_feed_game'),
     path('workouts', views.workouts, name='workouts'),
     path('myworkouts', views.myworkouts, name='myworkouts'),
     path('register', include('user.urls')),
