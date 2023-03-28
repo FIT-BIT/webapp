@@ -1,49 +1,51 @@
-
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="container">
+<div class="container" styles=>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h1>Create Workout Routine</h1>
-            <form method="post">
+            <form action="#" method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                <div class="form-group" style = "margin-bottom: 10px;">
+                    <label for="routine_name">Routine Name:</label>
+                    <input type="text" class="form-control" id="routine_name" name="routine_name" required>
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <label for="exercise_name">Exercise Name:</label>
+                    <input type="text" class="form-control" id="exercise_name" name="exercise_name" required>
                 </div>
-                <h2>Select Exercises</h2>
-                {% for exercise in exercises %}
-                    <div class="card">
-                        <div class="card-header">
-                            <input type="checkbox" id="exercise_{{ exercise.id }}" name="exercises" value="{{ exercise.id }}">
-                            <label for="exercise_{{ exercise.id }}">{{ exercise.name }}</label>
-                        </div>
-                        <div class="card-body">
-                            <p>{{ exercise.description }}</p>
-                            <div class="form-group">
-                                <label for="sets_{{ exercise.id }}">Sets</label>
-                                <input type="number" class="form-control" id="sets_{{ exercise.id }}" name="sets_{{ exercise.id }}" min="1" max="10" value="3">
-                            </div>
-                            <div class="form-group">
-                                <label for="reps_{{ exercise.id }}">Reps</label>
-                                <input type="number" class="form-control" id="reps_{{ exercise.id }}" name="reps_{{ exercise.id }}" min="1" max="50" value="10">
-                            </div>
-                            <div class="form-group">
-                                <label for="rest_time_{{ exercise.id }}">Rest Time (seconds)</label>
-                                <input type="number" class="form-control" id="rest_time_{{ exercise.id }}" name="rest_time_{{ exercise.id }}" min="1" max="300" value="60">
-                            </div>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="num_sets">Number of Sets:</label>
+                        <input type="number" class="form-control" id="num_sets" name="num_sets" required>
                     </div>
-                {% endfor %}
-                <br>
-                <button type="submit" class="btn btn-primary">Create Workout Routine</button>
+                    <div class="form-group col-md-6">
+                        <label for="num_reps">Number of Reps:</label>
+                        <input type="number" class="form-control" id="num_reps" name="num_reps" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Exercise</button>
             </form>
         </div>
+        <div class="col-md-6">
+            <h1>Workout Preview</h1>
+            <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for exercise in exercises %}
+                    <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">
+                        <h4>{{ exercise.name }}</h4>
+                        <p><strong>Number of Sets:</strong> {{ exercise.sets }}</p>
+                        <p><strong>Number of Reps:</strong> {{ exercise.reps }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+
+
         <div class="col-md-4">
             <!-- display user profile -->
 
@@ -51,7 +53,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style = "font-style:normal; font-size: large;">
                             <h4>Personal Information</h4>
                         </div>
                         <div class="card-body">
@@ -63,7 +65,7 @@
                     </div>
                     <br>
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style = "font-style:normal; font-size: large;">
                             <h4>Medical Information</h4>
                         </div>
                         <div class="card-body">
@@ -75,7 +77,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style = "font-style:normal; font-size: large;">
                             <h4>Workout Routines</h4>
                         </div>
                         <div class="card-body">
@@ -96,108 +98,15 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-
-{% comment %} {% extends 'base.html' %}
-
-{% block content %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <h2>Create a Workout Routine</h2>
-            <form method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="routine_name">Routine Name</label>
-                    <div class="input-group mb-3">
-                        <input type="text" name="routine_name" id="routine_name" class="form-control border-0 shadow-none" placeholder="Enter Routine Name" aria-label="Enter Routine Name" aria-describedby="routine_name_icon">
-                        <div class="input-group-append">
-                            <span class="input-group-text border-0 shadow-none" id="routine_name_icon"><i class="far fa-clipboard"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="exercises">Exercises</label>
-                    <div class="input-group mb-3">
-                        <select multiple class="form-control border-0 shadow-none" name="exercises" id="exercises" aria-label="Exercises" aria-describedby="exercises_icon">
-                            <option value="exercise_1">Exercise 1</option>
-                            <option value="exercise_2">Exercise 2</option>
-                            <option value="exercise_3">Exercise 3</option>
-                            <option value="exercise_4">Exercise 4</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text border-0 shadow-none" id="exercises_icon"><i class="far fa-check-square"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Create Routine</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Hover effects -->
 <style>
-    .form-group:hover {
-        background-color: #f5f5f5;
-        cursor: pointer;
+    .form-control {
+        border-radius: 5px;
+        border-color: #ccc;
     }
-    label:hover {
-        font-weight: bold;
-    }
-    .input-group-text:hover {
-        background-color: #f5f5f5;
-        cursor: pointer;
-    }
-    .input-group-text i {
-        font-size: 1.2rem;
+
+    button:hover {
+        background-color: #0062cc;
+        border-color: #005cbf;
     }
 </style>
-{% endblock %} {% endcomment %}
-
-
-{% comment %} {% extends 'base.html' %}
-
-{% block content %}
-    <div class="container">
-        <h1>Create Workout Routine</h1>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" name="name">
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-            </div>
-            <h2>Select Exercises</h2>
-            {% for exercise in exercises %}
-                <div class="cardx">
-                    <div class="card-header">
-                        <input type="checkbox" id="exercise_{{ exercise.id }}" name="exercises" value="{{ exercise.id }}">
-                        <label for="exercise_{{ exercise.id }}">{{ exercise.name }}</label>
-                    </div>
-                    <div class="card-body">
-                        <p>{{ exercise.description }}</p>
-                        <div class="form-group">
-                            <label for="sets_{{ exercise.id }}">Sets</label>
-                            <input type="number" class="form-control" id="sets_{{ exercise.id }}" name="sets_{{ exercise.id }}" min="1" max="10" value="3">
-                        </div>
-                        <div class="form-group">
-                            <label for="reps_{{ exercise.id }}">Reps</label>
-                            <input type="number" class="form-control" id="reps_{{ exercise.id }}" name="reps_{{ exercise.id }}" min="1" max="50" value="10">
-                        </div>
-                        <div class="form-group">
-                            <label for="rest_time_{{ exercise.id }}">Rest Time (seconds)</label>
-                            <input type="number" class="form-control" id="rest_time_{{ exercise.id }}" name="rest_time_{{ exercise.id }}" min="1" max="300" value="60">
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            <br>
-            <button type="submit" class="btn btn-primary">Create Workout Routine</button>
-        </form>
-    </div>
-{% endblock %} {% endcomment %}
+{% endblock %}
