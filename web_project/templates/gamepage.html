@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<iframe src="https://scratch.mit.edu/projects/600560206/embed" allowtransparency="true" width="800px" height="563px" frameborder="0"
+    scrolling="no" id="gamePlay" allowfullscreen></iframe>
+
+
+    <img id="bg" src="{% url 'video_feed_game' %}" alt="you"  style="border: 5px solid #555; display: block; margin: auto;"/>
+
+{% endblock %}

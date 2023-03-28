@@ -100,3 +100,36 @@ def generator(camera):
 def exercise(request):
     # exercise_counter.main()
     return render(request, 'exercisepage.html')
+
+
+
+def generateGame():
+	# grab global references to the output frame and lock variables
+	global outputFrame, lock
+	# loop over frames from the output stream
+	while True:
+		# wait until the lock is acquired
+		with lock:
+			# check if the output frame is available, otherwise skip
+			# the iteration of the loop
+			if outputFrame is None:
+				continue
+			# encode the frame in JPEG format
+			(flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
+			# ensure the frame was successfully encoded
+			if not flag:
+				continue
+		# yield the output frame in the byte format
+		yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
+			bytearray(encodedImage) + b'\r\n')
+
+
+def game(request):
+    # exercise_counter.main()
+    return render(request, 'gamepage.html')
+
+@gzip.gzip_page
+def video_feed_game(request):
+    response = StreamingHttpResponse(
+        generateGame(), content_type="multipart/x-mixed-replace;boundary=frame")
+    return response

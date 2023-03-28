@@ -24,6 +24,7 @@ urlpatterns = [
     # path('', include('home.urls')),
     path('', views.home, name='homepage'),
     path('exercise', views.exercise, name='exercisepage'),
+    path('game', views.game, name='gamepage'),
     path('video_feed/', views.video_feed, name='video_feed'),
     path('video_feed_camera/', views.video_feed_camera, name='video_feed_camera'),
     path('workouts', views.workouts, name='workouts'),
