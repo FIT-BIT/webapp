@@ -756,8 +756,6 @@ def jumping_jacks_rep(cap, total_reps):
                 )
 
     # release the video capture and close the window
-    cap.release()
-    cv2.destroyAllWindows()
 
 
 # # Right Knee Touches
@@ -1323,14 +1321,15 @@ def function_map():
                        "walk": walk}
     return function_mapping
 
-def routine(set = 0):  
+def routine(set = "0"):  
     workout_routine = ["walk", "jumpingjacks"]
-    if set == 1:
-        workout_routine.extend(["bicepCurls", "shoulderPress", "RightKneeTouches", "squats"])
-    elif set == 2:
-        workout_routine.extend(["crunches", "pushups", "hammerCurl", "armRaise", "SitUps" ])
+    if set == "1":
+        workout_routine.extend(["bicepCurls", "shoulderPress", "squats", "crunches", "SitUps"])
+    elif set == "2":
+        workout_routine.extend(["RightKneeTouches", "pushups", "hammerCurl", "armRaise", "SitUps" , "crunches"])
     #workout_routine = ["bicepCurls", "squats", "jumpingjacks", "pushups", "crunches","jumpingjacks","armRaise","shoulderPress","LeftKneeTouches", "hammerCurl", "RightKneeTouches", "SitUps", "walk"]
     #workout_routine = ["hammerCurl"]
+    print(workout_routine)
     return workout_routine
 
 

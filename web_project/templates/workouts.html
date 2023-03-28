@@ -7,6 +7,24 @@
 
     <div class="grid">
         <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
+            <a href="{% url 'myRoutine' %}">
+
+                <div class="img">
+                    <img src="{% static 'images/cardio_day.jpg' %}" alt="" />
+                </div>
+            </a>
+            <div class="content">
+                <a href="{% url 'myRoutine' %}">
+                    <h2 class="title">Full Body Workout</h2>
+                    <p>Full body workout exercises makes your brain release endorphins,
+                        improving your stamina and increasing your energy levels.
+                        They also get the blood flowing, so your oxygen levels increase,
+                        and your heart rate increases.</p>
+
+                </a>
+            </div>
+        </div>
+        <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
             <div class="img">
                 <img src="{% static 'images/chest_day.jpg' %}" alt="" />
             </div>
@@ -103,24 +121,7 @@
                 </div>
             </a>
         </div>
-        <div data-aos="zoom-in-up" data-aos-duration="800" class="card">
-            <a href="./cardio.html">
-
-                <div class="img">
-                    <img src="{% static 'images/cardio_day.jpg' %}" alt="" />
-                </div>
-            </a>
-            <div class="content">
-                <a href="./cardio.html">
-                    <h2 class="title">Cardio Workout</h2>
-                    <p>Cardiovascular exercise makes your brain release endorphins,
-                        improving your stamina and increasing your energy levels.
-                        They also get the blood flowing, so your oxygen levels increase,
-                        and your heart rate increases.</p>
-
-                </a>
-            </div>
-        </div>
+        
     </div>
 </section>
 
