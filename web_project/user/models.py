@@ -81,3 +81,26 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.IntegerField()
+    weight = models.FloatField()
+    medical_history = models.TextField()
+
+class Exercise(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    
+class WorkoutRoutine(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    exercises = models.ManyToManyField(Exercise, through='ExerciseInRoutine')
+    
+class ExerciseInRoutine(models.Model):
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    workout_routine = models.ForeignKey(WorkoutRoutine, on_delete=models.CASCADE)
+    sets = models.IntegerField()
+    reps = models.IntegerField()
+    rest_time = models.IntegerField()

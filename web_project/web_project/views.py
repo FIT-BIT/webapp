@@ -13,21 +13,19 @@ from core import AudioCommSys as audio
 from requests import Response
 from core import ExercisesModule as trainer
 # from core.camera import VideoCamera
-from core.exercise_counter import bicep_curl_rep
+from core.exercise_counter import main as exerciseView
 from core.gameControlers import main as gameControls
 
+difficulty_level = ''
+set = 0
 
 def gen():
-    for i in range(0, 5):
-        level = 1
-        # cap = cv2.VideoCapture(0)
-        for i in bicep_curl_rep(5):
-            yield i
-        # for i in trainer.start_workout_session(level).complete_path("Easy"):
-        #     yield i
-            # print("hereee ------------------------------------")
-        print("DONE!")
-
+    cap = cv2.VideoCapture(0)
+    print(difficulty_level,set)
+    for i in exerciseView(cap,difficulty_level,set):
+        yield i
+    print("DONE!")
+    
 
 @gzip.gzip_page
 def video_feed(request):
@@ -52,6 +50,7 @@ def video_feed(request):
 
 
 def home(request):
+    print("xxxxxxxxxxxxxx")
     return render(request, 'homepage.html')
     # return render( request, 'index.html' )
 
@@ -99,8 +98,20 @@ def generator(camera):
 
 
 def exercise(request):
-    # exercise_counter.main()
-    return render(request, 'exercisepage.html')
+    # if request.method == 'POST':
+    global difficulty_level ,set 
+    set = request.GET.get('workout')
+    difficulty_level = request.GET.get('difficulty_level')
+    print("difficulty_level,set")
+    print(difficulty_level,set)
+    return render (request,'exercisepage.html')
+    # return render(request, 'myworkouts.html')
+
+def myRoutine(request):
+    context = {}
+    context['workout1'] = ["Walk", "Jumping Jacks","Bicep Curls", "Shoulder Press", "Right Knee Touches", "squats"]
+    context['workout2'] = ["Walk", "Jumping Jacks","Crunches", "Push Ups", "Hammer Curl", "Arm Raise", "Sit Ups"]
+    return render(request, 'myRoutine.html',context)
 
 
 
@@ -118,6 +129,7 @@ def generateGame():
         yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
             encodedImage.tobytes() + b'\r\n')
 
+ 
 
 def game(request):
     # exercise_counter.main()

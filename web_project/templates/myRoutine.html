@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container my-5"  >
+    <div class="row" style="margin-top:100px;">
+        
+        <div data-aos="zoom-in" class="card" >
+            <div class="img">
+                <img style="hight:50px;width:200px" src="{% static 'images/coach-1.jpg' %}" alt="" srcset="">
+            </div>
+            <div class="trainers-content">
+                <h2 class="title">Select Workout 2</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for exercise in workout2 %}
+                    <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">{{ exercise }}</li>
+                    {% endfor %}
+                </ul>
+                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal1">
+                        Select Difficulty
+                    </button>
+            </div>
+        </div>
+
+
+
+        <div data-aos="zoom-in" class="card">
+            <div class="img">
+                <img style="hight:50px;width:200px" src="{% static 'images/coach-1.jpg' %}" alt="" srcset="">
+            </div>
+            <div class="trainers-content">
+                <h2 class="title">Select Workout 1</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for exercise in workout1 %}
+                    <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">{{ exercise }}</li>
+                    {% endfor %}
+                </ul>
+                <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal2">
+                    Select Difficulty
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="difficultyModal1" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid purple; width: 30%;border-radius:20px">
+      <h3>Select Difficulty</h3>
+      <div style="margin-top:10px">
+        <button type="button" style="margin-top:10px;background-color: #28a745; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=1&difficulty_level=easy'">Easy</button><br/>
+        <button type="button" style="margin-top:10px;background-color: #ffc107; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=1&difficulty_level=medium'">Medium</button><br/>
+        <button type="button" style="margin-top:10px;background-color: #dc3545; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=1&difficulty_level=hard'">Hard</button><br/>
+      </div>
+    </div>
+  </div>
+<!-- Modal2 -->
+<div id="difficultyModal2" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 2px solid purple; width: 30%;border-radius:20px">
+      <h3>Select Difficulty</h3>
+      <div style="margin-top:10px">
+        <button type="button" style="margin-top:10px;background-color: #28a745; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=2&difficulty_level=easy'">Easy</button><br/>
+        <button type="button" style="margin-top:10px;background-color: #ffc107; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=2&difficulty_level=medium'">Medium</button><br/>
+        <button type="button" style="margin-top:10px;background-color: #dc3545; color: #fff; border: none; padding: 5px 10px; border-radius: 5px;" onclick="location.href='/exercise?workout=2&difficulty_level=hard'">Hard</button><br/>
+      </div>
+    </div>
+  </div>
+<script>
+    var modal1 = document.getElementById("difficultyModal1");
+    var btn1 = document.querySelector("button[data-target='#difficultyModal1']");
+  
+    btn1.onclick = function() {
+      modal1.style.display = "block";
+    }
+  
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal1.style.display = "none";
+      }
+    }
+
+    var modal2 = document.getElementById("difficultyModal2");
+    var btn2 = document.querySelector("button[data-target='#difficultyModal2']");
+  
+    btn2.onclick = function() {
+      modal2.style.display = "block";
+    }
+  
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal2.style.display = "none";
+      }
+    }
+
+  </script>
+{% endblock %}
+
