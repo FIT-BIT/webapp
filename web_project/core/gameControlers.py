@@ -330,8 +330,8 @@ def checkJumpCrouch(image, results, MID_Y=250, draw=False, display=False):
 
 def main():
     camera_video = cv2.VideoCapture(0)
-    camera_video.set(3, 1280)
-    camera_video.set(4, 960)
+    camera_video.set(3, 600)
+    camera_video.set(4, 400)
 
     # Create named window for resizing purposes.
     # cv2.namedWindow('Subway Surfers with Pose Detection', cv2.WINDOW_NORMAL)
