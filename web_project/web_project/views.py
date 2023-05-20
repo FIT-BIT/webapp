@@ -15,15 +15,14 @@ from core import ExercisesModule as trainer
 # from core.camera import VideoCamera
 from core.exercise_counter import bicep_curl_rep, main
 
+difficulty_level = ''
+set = 0
 
 def gen():
-    level = 1
     cap = cv2.VideoCapture(0)
-    for i in main(cap):
+    print(difficulty_level,set)
+    for i in main(cap,difficulty_level,set):
         yield i
-    # for i in trainer.start_workout_session(level).complete_path("Easy"):
-    #     yield i
-        # print("hereee ------------------------------------")
     print("DONE!")
 
 
@@ -50,6 +49,7 @@ def video_feed(request):
 
 
 def home(request):
+    print("xxxxxxxxxxxxxx")
     return render(request, 'homepage.html')
     # return render( request, 'index.html' )
 
@@ -98,7 +98,21 @@ def generator(camera):
 
 def exercise(request):
     # exercise_counter.main()
-    return render(request, 'exercisepage.html')
+    # if request.method == 'POST':
+    global difficulty_level ,set 
+    set = request.GET.get('workout')
+    difficulty_level = request.GET.get('difficulty_level')
+    print("difficulty_level,set")
+    print(difficulty_level,set)
+    return render (request,'exercisepage.html')
+    # return render(request, 'myworkouts.html')
+
+def myRoutine(request):
+    context = {}
+    context['workout1'] = ["Walk", "Jumping Jacks","Bicep Curls", "Shoulder Press", "Right Knee Touches", "squats"]
+    context['workout2'] = ["Walk", "Jumping Jacks","Crunches", "Push Ups", "Hammer Curl", "Arm Raise", "Sit Ups"]
+    return render(request, 'myRoutine.html',context)
+
 
 
 def profile(request):
