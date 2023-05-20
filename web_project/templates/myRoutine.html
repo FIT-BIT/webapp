@@ -4,26 +4,6 @@
 {% block body %}
 <div class="container my-5"  >
     <div class="row" style="margin-top:100px;">
-        
-        <div data-aos="zoom-in" class="card" >
-            <div class="img">
-                <img style="hight:50px;width:200px" src="{% static 'images/coach-1.jpg' %}" alt="" srcset="">
-            </div>
-            <div class="trainers-content">
-                <h2 class="title">Select Workout 2</h2>
-                <ul style="list-style: none; padding-left: 0;">
-                    {% for exercise in workout2 %}
-                    <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">{{ exercise }}</li>
-                    {% endfor %}
-                </ul>
-                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal1">
-                        Select Difficulty
-                    </button>
-            </div>
-        </div>
-
-
-
         <div data-aos="zoom-in" class="card">
             <div class="img">
                 <img style="hight:50px;width:200px" src="{% static 'images/coach-1.jpg' %}" alt="" srcset="">
@@ -35,11 +15,28 @@
                     <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">{{ exercise }}</li>
                     {% endfor %}
                 </ul>
-                <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal2">
+                <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal1">
                     Select Difficulty
                 </button>
             </div>
+        </div> 
+        <div data-aos="zoom-in" class="card" >
+            <div class="img">
+                <img style="hight:50px;width:200px" src="{% static 'images/coach-1.jpg' %}" alt="" srcset="">
+            </div>
+            <div class="trainers-content">
+                <h2 class="title">Select Workout 2</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for exercise in workout2 %}
+                    <li style="margin-bottom: 10px; padding: 5px; background-color: #f7f7f7; border-radius: 3px;">{{ exercise }}</li>
+                    {% endfor %}
+                </ul>
+                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#difficultyModal2">
+                        Select Difficulty
+                    </button>
+            </div>
         </div>
+
     </div>
 </div>
 
